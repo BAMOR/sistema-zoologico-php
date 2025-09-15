@@ -1,7 +1,5 @@
 <?php
-// Incluimos el archivo de conexión a la base de datos
 include 'includes/db_connection.php';
-// Incluimos las funciones de ayuda
 include 'includes/funciones.php';
 
 // --- Procesamiento del formulario de registro ---

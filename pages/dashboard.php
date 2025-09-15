@@ -3,17 +3,17 @@
         <div class="stat-card">
             <i class="fas fa-paw"></i>
             <h3>Animales</h3>
-            <p><?php echo contarRegistros('animales'); ?></p>
+            <p><?php echo contarRegistros($conn, 'animales'); ?></p>
         </div>
         <div class="stat-card">
             <i class="fas fa-users"></i>
             <h3>Empleados</h3>
-            <p><?php echo contarRegistros('empleados'); ?></p>
+            <p><?php echo contarRegistros($conn, 'empleados'); ?></p>
         </div>
         <div class="stat-card">
             <i class="fas fa-mountain"></i>
             <h3>Hábitats</h3>
-            <p><?php echo contarRegistros('habitats'); ?></p>
+            <p><?php echo contarRegistros($conn, 'habitats'); ?></p>
         </div>
     </div>
 </div>

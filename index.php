@@ -4,6 +4,8 @@
 // Si no los tienes, puedes omitir estas líneas por ahora.
 // include 'includes/db_connection.php';
 // include 'includes/funciones.php';
+include 'includes/db_connection.php'; // Correcto
+include 'includes/funciones.php';      // Nuevo
 
 // Verificamos qué página se debe mostrar. El valor por defecto es 'dashboard'.
 $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
