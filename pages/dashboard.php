@@ -1,3 +1,10 @@
+<?php
+// Incluimos la conexión a la base de datos y el archivo de funciones.
+// Esto es importante si el archivo se accede directamente o si se incluye en otro contexto.
+include 'includes/db_connection.php';
+include 'includes/funciones.php';
+?>
+
 <div class="dashboard">
     <div class="stats">
         <div class="stat-card">

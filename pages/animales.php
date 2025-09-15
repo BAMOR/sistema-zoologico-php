@@ -1,12 +1,7 @@
 <?php
-include 'includes/db_connection.php';
-include 'includes/funciones.php';
-
 // --- Procesamiento del formulario de registro ---
 
-// Verificar si el formulario ha sido enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Recopilar datos del formulario
     $nombre = $_POST['nombre'] ?? '';
     $especie = $_POST['especie'] ?? '';
     $habitat = $_POST['habitat'] ?? '';
@@ -16,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dieta = $_POST['dieta'] ?? '';
     $observaciones = $_POST['observaciones'] ?? '';
 
-    // Lógica para subir la foto
     $foto_path = NULL;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = 'uploads/';
@@ -28,13 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         move_uploaded_file($_FILES['foto']['tmp_name'], $foto_path);
     }
 
-    // Preparar la consulta SQL de forma segura
     $sql = "INSERT INTO animales (nombre, especie, habitat, fecha_nacimiento, peso, salud, dieta, observaciones, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssdssss", $nombre, $especie, $habitat, $fecha_nacimiento, $peso, $salud, $dieta, $observaciones, $foto_path);
 
-    // Ejecutar la consulta y mostrar mensaje de éxito o error
     if ($stmt->execute()) {
         echo '<p class="success-message">Animal registrado exitosamente.</p>';
     } else {
@@ -102,9 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="table-container">
         <h3>Animales Registrados</h3>
         <?php
-        // Obtenemos los animales de la base de datos
         $animales = obtenerAnimales($conn);
-        
         if ($animales && count($animales) > 0) {
             echo '<table class="data-table">';
             echo '<tr>
@@ -136,9 +125,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo '<p class="no-data">No hay animales registrados.</p>';
         }
-        
-        // Cierra la conexión a la base de datos
-        $conn->close();
         ?>
     </div>
 </section>
