@@ -13,10 +13,10 @@
     <header class="header">
         <h1><i class="fas fa-paw"></i> Sistema de Gestión - Zoológico</h1>
         <nav class="nav">
-            <a href="index.php?seccion=animales" class="nav-link <?php echo ($seccion_activa == 'animales') ? 'active' : ''; ?>">Animales</a>
-            <a href="index.php?seccion=empleados" class="nav-link <?php echo ($seccion_activa == 'empleados') ? 'active' : ''; ?>">Empleados</a>
-            <a href="index.php?seccion=habitats" class="nav-link <?php echo ($seccion_activa == 'habitats') ? 'active' : ''; ?>">Hábitats</a>
-            <a href="index.php?seccion=visitantes" class="nav-link <?php echo ($seccion_activa == 'visitantes') ? 'active' : ''; ?>">Visitantes</a>
-            <a href="index.php?seccion=inventario" class="nav-link <?php echo ($seccion_activa == 'inventario') ? 'active' : ''; ?>">Inventario</a>
+            <a href="index.php?page=animales" class="nav-link <?php echo ($page_activa == 'animales') ? 'active' : ''; ?>">Animales</a>
+            <a href="index.php?page=empleados" class="nav-link <?php echo ($page_activa == 'empleados') ? 'active' : ''; ?>">Empleados</a>
+            <a href="index.php?page=habitats" class="nav-link <?php echo ($page_activa == 'habitats') ? 'active' : ''; ?>">Hábitats</a>
+            <a href="index.php?page=visitantes" class="nav-link <?php echo ($page_activa == 'visitantes') ? 'active' : ''; ?>">Visitantes</a>
+            <a href="index.php?page=inventario" class="nav-link <?php echo ($page_activa == 'inventario') ? 'active' : ''; ?>">Inventario</a>
         </nav>
     </header>
