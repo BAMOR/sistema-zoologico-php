@@ -1,11 +1,57 @@
-<!-- Sección Animales -->
+<?php
+// Incluimos el archivo de conexión a la base de datos
+include 'includes/db_connection.php';
+// Incluimos las funciones de ayuda
+include 'includes/funciones.php';
+
+// --- Procesamiento del formulario de registro ---
+
+// Verificar si el formulario ha sido enviado
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recopilar datos del formulario
+    $nombre = $_POST['nombre'] ?? '';
+    $especie = $_POST['especie'] ?? '';
+    $habitat = $_POST['habitat'] ?? '';
+    $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? '';
+    $peso = $_POST['peso'] ?? 0;
+    $salud = $_POST['salud'] ?? '';
+    $dieta = $_POST['dieta'] ?? '';
+    $observaciones = $_POST['observaciones'] ?? '';
+
+    // Lógica para subir la foto
+    $foto_path = NULL;
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = 'uploads/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        $foto_name = uniqid('animal_', true) . '.' . pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+        $foto_path = $upload_dir . $foto_name;
+        move_uploaded_file($_FILES['foto']['tmp_name'], $foto_path);
+    }
+
+    // Preparar la consulta SQL de forma segura
+    $sql = "INSERT INTO animales (nombre, especie, habitat, fecha_nacimiento, peso, salud, dieta, observaciones, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssdssss", $nombre, $especie, $habitat, $fecha_nacimiento, $peso, $salud, $dieta, $observaciones, $foto_path);
+
+    // Ejecutar la consulta y mostrar mensaje de éxito o error
+    if ($stmt->execute()) {
+        echo '<p class="success-message">Animal registrado exitosamente.</p>';
+    } else {
+        echo '<p class="error-message">Error al registrar el animal: ' . $stmt->error . '</p>';
+    }
+    $stmt->close();
+}
+?>
+
 <section id="animales" class="section">
     <h2><i class="fas fa-paw"></i> Gestión de Animales</h2>
     
-    <!-- Formulario de Animales -->
     <div class="form-container">
         <h3>Registrar Nuevo Animal</h3>
-        <form action="procesar_animal.php" method="POST" enctype="multipart/form-data">
+        <form action="index.php?page=animales" method="POST" enctype="multipart/form-data">
             <div class="form-grid">
                 <div class="form-group">
                     <label>Nombre del Animal *</label>
@@ -55,11 +101,12 @@
         </form>
     </div>
 
-    <!-- Lista de Animales -->
     <div class="table-container">
         <h3>Animales Registrados</h3>
         <?php
-        $animales = obtenerAnimales();
+        // Obtenemos los animales de la base de datos
+        $animales = obtenerAnimales($conn);
+        
         if ($animales && count($animales) > 0) {
             echo '<table class="data-table">';
             echo '<tr>
@@ -91,6 +138,9 @@
         } else {
             echo '<p class="no-data">No hay animales registrados.</p>';
         }
+        
+        // Cierra la conexión a la base de datos
+        $conn->close();
         ?>
     </div>
 </section>
