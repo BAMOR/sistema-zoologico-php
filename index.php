@@ -3,8 +3,9 @@
 include 'includes/db_connection.php';
 include 'includes/funciones.php';
 
-// Verificamos qué página se debe mostrar. El valor por defecto es 'dashboard'.
+// Determinamos qué página cargar según el parámetro 'page' en la URL
 $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+$path = 'pages/' . basename($page) . '.php';
 
 // Validamos que el archivo de la página exista para evitar errores.
 $path = 'pages/' . basename($page) . '.php';

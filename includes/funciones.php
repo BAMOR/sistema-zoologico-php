@@ -1,7 +1,6 @@
 <?php
 // Función para contar registros en una tabla
-function contarRegistros($tabla) {
-    global $conn; // Accede a la conexión global
+function contarRegistros($conn, $tabla) {
     $sql = "SELECT COUNT(*) AS total FROM $tabla";
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
@@ -30,5 +29,18 @@ function obtenerAnimales($conn) {
         }
     }
     return $animales;
+}
+
+// Función para obtener todos los empleados de la base de datos
+function obtenerEmpleados($conn) {
+    $sql = "SELECT id, nombre, puesto, fecha_contratacion, salario, telefono, email FROM empleados ORDER BY nombre ASC";
+    $result = $conn->query($sql);
+    $empleados = [];
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $empleados[] = $row;
+        }
+    }
+    return $empleados;
 }
 ?>

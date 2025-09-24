@@ -1,7 +1,5 @@
 <?php
-// Incluimos el archivo de conexión a la base de datos y las funciones de ayuda
-include 'includes/db_connection.php';
-include 'includes/funciones.php';
+// Incluimos la conexión a la base de datos y las funciones de ayuda
 
 // --- Procesamiento del formulario de registro de empleados ---
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -16,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Preparar la consulta SQL
     $sql = "INSERT INTO empleados (nombre, puesto, fecha_contratacion, salario, telefono, email, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
+    
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssdsss", $nombre, $puesto, $fecha_contratacion, $salario, $telefono, $email, $observaciones);
 
@@ -32,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <section id="empleados" class="section">
     <h2><i class="fas fa-user-tie"></i> Gestión de Empleados</h2>
-
+    
     <div class="form-container">
         <h3>Registrar Nuevo Empleado</h3>
         <form action="index.php?page=empleados" method="POST">
@@ -75,19 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="table-container">
         <h3>Empleados Registrados</h3>
         <?php
-        // Función para obtener empleados de la base de datos
-        function obtenerEmpleados($conn) {
-            $sql = "SELECT id, nombre, puesto, fecha_contratacion, salario, telefono, email FROM empleados ORDER BY nombre ASC";
-            $result = $conn->query($sql);
-            $empleados = [];
-            if ($result && $result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $empleados[] = $row;
-                }
-            }
-            return $empleados;
-        }
-
         $empleados = obtenerEmpleados($conn);
         if ($empleados && count($empleados) > 0) {
             echo '<table class="data-table">';

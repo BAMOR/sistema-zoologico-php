@@ -1,18 +1,64 @@
-<!-- Sección Inventario -->
+<?php
+// Incluimos la conexión a la base de datos y las funciones de ayuda
+
+
+// --- Procesamiento del formulario de alimentos ---
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['form_alimento'])) {
+    $nombre = $_POST['nombre'] ?? '';
+    $tipo = $_POST['tipo'] ?? '';
+    $cantidad = $_POST['cantidad'] ?? 0;
+    $unidad = $_POST['unidad'] ?? '';
+    $fecha_caducidad = $_POST['fecha_caducidad'] ?? NULL;
+    $animales = $_POST['animales'] ?? '';
+
+    $sql = "INSERT INTO alimentos (nombre, tipo, cantidad, unidad, fecha_caducidad, animales) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssisss", $nombre, $tipo, $cantidad, $unidad, $fecha_caducidad, $animales);
+
+    if ($stmt->execute()) {
+        echo '<p class="success-message">Alimento registrado exitosamente.</p>';
+    } else {
+        echo '<p class="error-message">Error al registrar el alimento: ' . $stmt->error . '</p>';
+    }
+    $stmt->close();
+}
+
+// --- Procesamiento del formulario de medicinas ---
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['form_medicina'])) {
+    $nombre = $_POST['nombre'] ?? '';
+    $tipo = $_POST['tipo'] ?? '';
+    $cantidad = $_POST['cantidad'] ?? 0;
+    $unidad = $_POST['unidad'] ?? '';
+    $fecha_caducidad = $_POST['fecha_caducidad'] ?? NULL;
+    $animales = $_POST['animales'] ?? '';
+    $instrucciones = $_POST['instrucciones'] ?? '';
+
+    $sql = "INSERT INTO medicinas (nombre, tipo, cantidad, unidad, fecha_caducidad, animales, instrucciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssissss", $nombre, $tipo, $cantidad, $unidad, $fecha_caducidad, $animales, $instrucciones);
+
+    if ($stmt->execute()) {
+        echo '<p class="success-message">Medicina registrada exitosamente.</p>';
+    } else {
+        echo '<p class="error-message">Error al registrar la medicina: ' . $stmt->error . '</p>';
+    }
+    $stmt->close();
+}
+?>
+
 <section id="inventario" class="section">
     <h2><i class="fas fa-boxes"></i> Gestión de Inventario</h2>
     
-    <!-- Tabs para Inventario -->
     <div class="tabs">
         <button class="tab-btn active" data-tab="alimentacion">Alimentación</button>
         <button class="tab-btn" data-tab="medicina">Medicina</button>
     </div>
     
-    <!-- Contenido de pestaña Alimentación -->
     <div id="tab-alimentacion" class="tab-content active">
         <div class="form-container">
             <h3>Registrar Nuevo Alimento</h3>
-            <form action="procesar_alimento.php" method="POST">
+            <form action="index.php?page=inventario" method="POST">
+                <input type="hidden" name="form_alimento" value="1">
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nombre del Alimento *</label>
@@ -58,11 +104,21 @@
             </form>
         </div>
 
-        <!-- Lista de Alimentos -->
         <div class="table-container">
             <h3>Inventario de Alimentos</h3>
             <?php
-            $alimentos = obtenerAlimentos();
+            function obtenerAlimentos($conn) {
+                $sql = "SELECT id, nombre, tipo, cantidad, unidad, fecha_caducidad, animales FROM alimentos ORDER BY nombre ASC";
+                $result = $conn->query($sql);
+                $alimentos = [];
+                if ($result && $result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $alimentos[] = $row;
+                    }
+                }
+                return $alimentos;
+            }
+            $alimentos = obtenerAlimentos($conn);
             if ($alimentos && count($alimentos) > 0) {
                 echo '<table class="data-table">';
                 echo '<tr>
@@ -97,11 +153,11 @@
         </div>
     </div>
     
-    <!-- Contenido de pestaña Medicina -->
     <div id="tab-medicina" class="tab-content">
         <div class="form-container">
             <h3>Registrar Nueva Medicina</h3>
-            <form action="procesar_medicina.php" method="POST">
+            <form action="index.php?page=inventario" method="POST">
+                <input type="hidden" name="form_medicina" value="1">
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nombre de la Medicina *</label>
@@ -151,11 +207,21 @@
             </form>
         </div>
 
-        <!-- Lista de Medicinas -->
         <div class="table-container">
             <h3>Inventario de Medicinas</h3>
             <?php
-            $medicinas = obtenerMedicinas();
+            function obtenerMedicinas($conn) {
+                $sql = "SELECT id, nombre, tipo, cantidad, unidad, fecha_caducidad, animales FROM medicinas ORDER BY nombre ASC";
+                $result = $conn->query($sql);
+                $medicinas = [];
+                if ($result && $result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $medicinas[] = $row;
+                    }
+                }
+                return $medicinas;
+            }
+            $medicinas = obtenerMedicinas($conn);
             if ($medicinas && count($medicinas) > 0) {
                 echo '<table class="data-table">';
                 echo '<tr>
@@ -190,3 +256,22 @@
         </div>
     </div>
 </section>
+<script>
+    // Script para la funcionalidad de pestañas
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+
+                tabs.forEach(item => item.classList.remove('active'));
+                tabContents.forEach(item => item.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(`tab-${targetTab}`).classList.add('active');
+            });
+        });
+    });
+</script>
